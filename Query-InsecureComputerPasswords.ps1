@@ -2,10 +2,11 @@
   .SYNOPSIS
   Name: Query-InsecureComputerPasswords.ps1
   Version: 1.0
+  Mod author: Grzegorz Głogowski - Microsoft Premier Field Engineer
+  Blog: htttps://blog.pfe.academy
+  Based on: https://www.github.com/russelltomkins/Active-Directory
   Author: Russell Tomkins - Microsoft Premier Field Engineer
-  Blog: https://aka.ms/russellt
-  Source: https://www.github.com/russelltomkins/Active-Directory
-
+ 
   .DESCRIPTION
   Queries an Active Directory Domain for all computer accounts and attempts to login
   to them with the default reset password or a blank password.
