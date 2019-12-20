@@ -1,6 +1,7 @@
 <#-----------------------------------------------------------------------------
-Russell Tomkins
-Microsoft Premier Field Engineer
+Grzegorz Głogowski - Microsoft Premier Field Engineer
+
+Cpde based on Russell Tomkins script https://github.com/russelltomkins/Active-Directory/blob/master/Query-InsecureLDAPBinds.ps1
 
 Name:           Query-InsecureLDAPBinds.ps1
 Description:    Exports a CSV from the specified domain controller containing 
@@ -69,6 +70,8 @@ ForEach ($Event in $Events) {
 	# Add Them To a Row in our Array
 	$Row = "" | select IPAddress,Port,User,BindType
 	$Row.IPAddress = $IPAddress
+	$clientName = (Resolve-DnsName $IPAddress -ea SilentlyContinue).NameHost # | Out-Null
+	$Row.Name = $clientName
 	$Row.Port = $Port
 	$Row.User = $User
 	$Row.BindType = $BindType
@@ -77,8 +80,23 @@ ForEach ($Event in $Events) {
 	$InsecureLDAPBinds += $Row
 }
 # Dump it all out to a CSV.
+# Get date
+$outdate = (Get-Date).tostring("yyyyMMdd-Hmmss")
+# Get folder from user
+if (![string]::IsNullOrEmpty($outfile)) { Clear-Variable outfile | Out-Null }
+Add-Type -AssemblyName System.Windows.Forms
+$FolderBrowser = New-Object System.Windows.Forms.FolderBrowserDialog
+[void]$FolderBrowser.ShowDialog()
+$outfolder = $FolderBrowser.SelectedPath
+if ([string]::IsNullOrEmpty($outfolder)) { $outfolder = "C:\Scripts" }
+# Create output folder and file
+if (!(Test-Path $outfolder -PathType Container)) {
+    New-Item -ItemType Directory -Force -Path $outfolder
+}
+$outfile= Join-Path -Path $outfolder -childpath $($env:COMPUTERNAME + "-" + $outdate + ".csv")
+
 Write-Host $InsecureLDAPBinds.Count "records saved to .\InsecureLDAPBinds.csv for Domain Controller" $ComputerName
-$InsecureLDAPBinds | Export-CSV -NoTypeInformation .\InsecureLDAPBinds.csv
-# -----------------------------------------------------------------------------
-# End of Main Script
-# -----------------------------------------------------------------------------
+
+$InsecureLDAPBinds | Export-CSV -NoTypeInformation $outfile
+
+# EOF
