@@ -1,7 +1,7 @@
 <#-----------------------------------------------------------------------------
 Grzegorz Głogowski - Microsoft Premier Field Engineer
 
-Cpde based on Russell Tomkins script https://github.com/russelltomkins/Active-Directory/blob/master/Query-InsecureLDAPBinds.ps1
+Code based on Russell Tomkins script ( https://github.com/russelltomkins/Active-Directory/blob/master/Query-InsecureLDAPBinds.ps1)
 
 Name:           Query-InsecureLDAPBinds.ps1
 Description:    Exports a CSV from the specified domain controller containing 
